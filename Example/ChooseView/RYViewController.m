@@ -68,4 +68,8 @@
     }
 }
 
+- (void)chooseView:(ChooseView *)chooseView didEndVerticalSlideWithOffset:(CGFloat)offset {
+    
+}
+
 @end
