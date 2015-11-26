@@ -148,7 +148,7 @@
             [self recover];
         }
     } else {
-        if([self.delegate respondsToSelector:@selector(chooseView:didEndVerticalSlideWithOffset:)]) {
+        if([self.delegate respondsToSelector:@selector(chooseView:didEndVerticalSlideWithOffset:index:)]) {
             [self.delegate chooseView:self didEndVerticalSlideWithOffset:yOffset index:self.currentIndex];
         }
     }
