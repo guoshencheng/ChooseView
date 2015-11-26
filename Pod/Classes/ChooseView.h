@@ -34,6 +34,7 @@
 
 @protocol ChooseViewDelegate <NSObject>
 @optional
+- (void)chooseViewWillSlide:(ChooseView *)chooseView;
 - (void)chooseViewDidLoadedLastCell:(ChooseView *)chooseView;
 - (void)chooseView:(ChooseView *)chooseView didLikeOrNotCell:(BOOL)isLike atIndex:(NSInteger)index;
 - (void)chooseView:(ChooseView *)chooseView didSlideLeftWithOffset:(CGFloat)offset;
