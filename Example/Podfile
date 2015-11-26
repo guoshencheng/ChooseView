@@ -1,0 +1,12 @@
+source 'https://github.com/CocoaPods/Specs.git'
+use_frameworks!
+
+target 'ChooseView_Example', :exclusive => true do
+  pod "ChooseView", :path => "../"
+end
+
+target 'ChooseView_Tests', :exclusive => true do
+  pod "ChooseView", :path => "../"
+
+  
+end
