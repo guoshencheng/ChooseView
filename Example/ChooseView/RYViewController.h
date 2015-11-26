@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 guoshencheng. All rights reserved.
 //
 
-@import UIKit;
+#import <UIKit/UIKit.h>
+#import "ChooseView.h"
 
-@interface RYViewController : UIViewController
+@interface RYViewController : UIViewController<ChooseViewDatasource, ChooseViewDelegate>
 
 @end

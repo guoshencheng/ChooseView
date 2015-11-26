@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
                        DESC
 
-  s.homepage         = "https://github.com/<GITHUB_USERNAME>/ChooseView"
+  s.homepage         = "https://github.com/gushencheng/ChooseView"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "guoshencheng" => "648772021@qq.com" }
@@ -36,5 +36,5 @@ Pod::Spec.new do |s|
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+    s.dependency 'Masonry'
 end
