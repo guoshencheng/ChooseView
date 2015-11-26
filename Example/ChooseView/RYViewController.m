@@ -68,7 +68,7 @@
     }
 }
 
-- (void)chooseView:(ChooseView *)chooseView didEndVerticalSlideWithOffset:(CGFloat)offset {
+- (void)chooseView:(ChooseView *)chooseView didEndVerticalSlideWithOffset:(CGFloat)offset index:(NSInteger)index {
     NSLog(@"%@", @(offset));
 }
 
