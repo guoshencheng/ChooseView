@@ -224,7 +224,9 @@
     [UIView animateWithDuration:0.2 animations:^{
         [weakSelf updateCurrentViewWithOffset:0];
     } completion:^(BOOL finished) {
-        
+        if ([self.delegate respondsToSelector:@selector(chooseViewDidRecover:)]) {
+            [self.delegate chooseViewDidRecover:self];
+        }
     }];
 }
 
