@@ -42,4 +42,12 @@
 - (void)chooseView:(ChooseView *)chooseView didEndVerticalSlideWithOffset:(CGFloat)offset index:(NSInteger)index;
 - (void)chooseViewDidRecover:(ChooseView *)chooseView;
 
+/***
+ direction:
+    1 for right
+    -1 for left
+    0 for none
+ ***/
+- (void)chooseView:(ChooseView *)chooseView changeDirection:(NSInteger)direction;
+
 @end

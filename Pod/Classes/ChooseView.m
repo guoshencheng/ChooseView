@@ -22,6 +22,7 @@
 @property (assign, nonatomic) CGPoint swipeGestureStartLocation;
 @property (assign, nonatomic) NSInteger cellNumber;
 @property (assign, nonatomic) NSInteger currentIndex;
+@property (assign, nonatomic) NSInteger direction;
 
 @end
 
@@ -112,6 +113,7 @@
 
 - (void)panGestureDidBegin:(UIPanGestureRecognizer *)gesture {
     self.panGestureStartLocation = [gesture locationInView:self];
+    self.direction = 0;
     if (!self.currentView) return;
     if ([self.delegate respondsToSelector:@selector(chooseViewWillSlide:)]) {
         [self.delegate chooseViewWillSlide:self];
@@ -122,6 +124,17 @@
     CGFloat xOffset = [gesture locationInView:self].x - self.panGestureStartLocation.x;
     CGFloat yOffset = [gesture locationInView:self].y - self.panGestureStartLocation.y;
     if (fabs(xOffset) > fabs(yOffset)) {
+        if ((self.direction == 0 || self.direction == -1) && xOffset > 0) {
+            self.direction = 1;
+            if ([self.delegate respondsToSelector:@selector(chooseView:changeDirection:)]) {
+                [self.delegate chooseView:self changeDirection:self.direction];
+            }
+        } else if ((self.direction == 0 || self.direction == 1) && xOffset < 0) {
+            self.direction = -1;
+            if ([self.delegate respondsToSelector:@selector(chooseView:changeDirection:)]) {
+                [self.delegate chooseView:self changeDirection:self.direction];
+            }
+        }
         if (![self isCellOver] && ![self loadToEnd]) {
             [self generatePrepareView];
         }
@@ -136,6 +149,11 @@
         }
         
         [self updateCurrentViewWithOffset:xOffset];
+    } else {
+        self.direction = 0;
+        if ([self.delegate respondsToSelector:@selector(chooseView:changeDirection:)]) {
+            [self.delegate chooseView:self changeDirection:self.direction];
+        }
     }
 }
 
@@ -277,6 +295,7 @@
 - (void)initProperties {
     self.reusabelCellIdDictionary = [[NSMutableDictionary alloc] init];
     self.currentIndex = 0;
+    self.direction = 0;
 }
 
 - (void)addPanGesture {
