@@ -38,5 +38,6 @@
 - (void)chooseView:(ChooseView *)chooseView didLikeOrNotCell:(BOOL)isLike atIndex:(NSInteger)index;
 - (void)chooseView:(ChooseView *)chooseView didSlideLeftWithOffset:(CGFloat)offset;
 - (void)chooseView:(ChooseView *)chooseView didSlideRightWithOffset:(CGFloat)offset;
+- (void)chooseView:(ChooseView *)chooseView didEndVerticalSlideWithOffset:(CGFloat)offset index:(NSInteger)index;
 
 @end

@@ -19,6 +19,7 @@
 @property (strong, nonatomic) NSMutableDictionary *reusabelCellIdDictionary;
 @property (strong, nonatomic) UIView *prepareView;
 @property (assign, nonatomic) CGPoint panGestureStartLocation;
+@property (assign, nonatomic) CGPoint swipeGestureStartLocation;
 @property (assign, nonatomic) NSInteger cellNumber;
 @property (assign, nonatomic) NSInteger currentIndex;
 
@@ -116,30 +117,40 @@
 
 - (void)panGestureDidMove:(UIPanGestureRecognizer *)gesture {
     CGFloat xOffset = [gesture locationInView:self].x - self.panGestureStartLocation.x;
-    if (![self isCellOver] && ![self loadToEnd]) {
-        [self generatePrepareView];
-    }
-    if (xOffset > 0) {
-        if ([self.delegate respondsToSelector:@selector(chooseView:didSlideRightWithOffset:)]) {
-            [self.delegate chooseView:self didSlideRightWithOffset:fabs(xOffset)];
+    CGFloat yOffset = [gesture locationInView:self].y - self.panGestureStartLocation.y;
+    if (fabs(xOffset) > fabs(yOffset)) {
+        if (![self isCellOver] && ![self loadToEnd]) {
+            [self generatePrepareView];
         }
-    } else {
-        if ([self.delegate respondsToSelector:@selector(chooseView:didSlideLeftWithOffset:)]) {
-            [self.delegate chooseView:self didSlideLeftWithOffset:fabs(xOffset)];
+        if (xOffset > 0) {
+            if ([self.delegate respondsToSelector:@selector(chooseView:didSlideRightWithOffset:)]) {
+                [self.delegate chooseView:self didSlideRightWithOffset:fabs(xOffset)];
+            }
+        } else {
+            if ([self.delegate respondsToSelector:@selector(chooseView:didSlideLeftWithOffset:)]) {
+                [self.delegate chooseView:self didSlideLeftWithOffset:fabs(xOffset)];
+            }
         }
+        
+        [self updateCurrentViewWithOffset:xOffset];
     }
-    
-    [self updateCurrentViewWithOffset:xOffset];
 }
 
 - (void)panGestureDidEnd:(UIPanGestureRecognizer *)gesture {
     CGFloat xOffset = [gesture locationInView:self].x - self.panGestureStartLocation.x;
-    if (xOffset > self.frame.size.width / 2) {
-        [self handlePushToRight];
-    } else if(xOffset < -self.frame.size.width / 2) {
-        [self handlePushToLeft];
+    CGFloat yOffset = [gesture locationInView:self].y - self.panGestureStartLocation.y;
+    if (fabs(xOffset) > fabs(yOffset))  {
+        if (xOffset > self.frame.size.width / 2) {
+            [self handlePushToRight];
+        } else if(xOffset < -self.frame.size.width / 2) {
+            [self handlePushToLeft];
+        } else {
+            [self recover];
+        }
     } else {
-        [self recover];
+        if([self.delegate respondsToSelector:@selector(chooseView:didEndVerticalSlideWithOffset:)]) {
+            [self.delegate chooseView:self didEndVerticalSlideWithOffset:yOffset index:self.currentIndex];
+        }
     }
 }
 
