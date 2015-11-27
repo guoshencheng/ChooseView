@@ -204,7 +204,7 @@
     } completion:^(BOOL finished) {
         [self pushNextView];
         if ([self.delegate respondsToSelector:@selector(chooseView:didLikeOrNotCell:atIndex:)]) {
-            [self.delegate chooseView:self didLikeOrNotCell:YES atIndex:self.currentIndex];
+            [self.delegate chooseView:self didLikeOrNotCell:YES atIndex:self.currentIndex - 1];
         }
     }];
 }
@@ -216,7 +216,7 @@
     } completion:^(BOOL finished) {
         [self pushNextView];
         if ([self.delegate respondsToSelector:@selector(chooseView:didLikeOrNotCell:atIndex:)]) {
-            [self.delegate chooseView:self didLikeOrNotCell:NO atIndex:self.currentIndex];
+            [self.delegate chooseView:self didLikeOrNotCell:NO atIndex:self.currentIndex - 1];
         }
     }];
 }
