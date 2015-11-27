@@ -143,8 +143,6 @@
         }
         
         [self updateCurrentViewWithOffset:xOffset];
-    } else {
-        [self changeToDirection:0];
     }
 }
 
