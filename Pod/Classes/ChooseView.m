@@ -82,13 +82,6 @@
 
 #pragma mark - GestureActionDelegate
 
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    if (!self.currentView) {
-        return NO;
-    }
-    return YES;
-}
-
 - (void)panGestureAction:(UIPanGestureRecognizer *)gesture {
     switch ([gesture state]) {
         case UIGestureRecognizerStateBegan:{
@@ -124,6 +117,7 @@
     CGFloat xOffset = [gesture locationInView:self].x - self.panGestureStartLocation.x;
     CGFloat yOffset = [gesture locationInView:self].y - self.panGestureStartLocation.y;
     if (fabs(xOffset) > fabs(yOffset)) {
+        if (!self.currentView) return;
         if ((self.direction == 0 || self.direction == -1) && xOffset > 0) {
             [self changeToDirection:1];
         } else if ((self.direction == 0 || self.direction == 1) && xOffset < 0) {
@@ -158,6 +152,7 @@
     CGFloat xOffset = [gesture locationInView:self].x - self.panGestureStartLocation.x;
     CGFloat yOffset = [gesture locationInView:self].y - self.panGestureStartLocation.y;
     if (fabs(xOffset) > fabs(yOffset))  {
+        if (!self.currentView) return;
         if (xOffset > self.frame.size.width / 2) {
             [self handlePushToRight];
         } else if(xOffset < -self.frame.size.width / 2) {
