@@ -48,6 +48,6 @@
     -1 for left
     0 for none
  ***/
-- (void)chooseView:(ChooseView *)chooseView changeDirection:(NSInteger)direction;
+- (void)chooseView:(ChooseView *)chooseView changeDirection:(NSInteger)direction fromDirection:(NSInteger)fromDirection;
 
 @end

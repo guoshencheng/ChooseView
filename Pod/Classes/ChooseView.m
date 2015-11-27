@@ -125,15 +125,9 @@
     CGFloat yOffset = [gesture locationInView:self].y - self.panGestureStartLocation.y;
     if (fabs(xOffset) > fabs(yOffset)) {
         if ((self.direction == 0 || self.direction == -1) && xOffset > 0) {
-            self.direction = 1;
-            if ([self.delegate respondsToSelector:@selector(chooseView:changeDirection:)]) {
-                [self.delegate chooseView:self changeDirection:self.direction];
-            }
+            [self changeToDirection:1];
         } else if ((self.direction == 0 || self.direction == 1) && xOffset < 0) {
-            self.direction = -1;
-            if ([self.delegate respondsToSelector:@selector(chooseView:changeDirection:)]) {
-                [self.delegate chooseView:self changeDirection:self.direction];
-            }
+            [self changeToDirection:-1];
         }
         if (![self isCellOver] && ![self loadToEnd]) {
             [self generatePrepareView];
@@ -150,10 +144,15 @@
         
         [self updateCurrentViewWithOffset:xOffset];
     } else {
-        self.direction = 0;
-        if ([self.delegate respondsToSelector:@selector(chooseView:changeDirection:)]) {
-            [self.delegate chooseView:self changeDirection:self.direction];
-        }
+        [self changeToDirection:0];
+    }
+}
+
+- (void)changeToDirection:(NSInteger)direction {
+    NSInteger lastDirection = self.direction;
+    self.direction = direction;
+    if ([self.delegate respondsToSelector:@selector(chooseView:changeDirection:fromDirection:)]) {
+        [self.delegate chooseView:self changeDirection:self.direction fromDirection:lastDirection];
     }
 }
 
