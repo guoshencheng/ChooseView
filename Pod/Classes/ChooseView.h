@@ -19,6 +19,7 @@
 @property (weak, nonatomic) id<ChooseViewDelegate> delegate;
 
 + (instancetype)create;
+- (void)setUpCurrentIndex:(NSInteger)index;
 - (void)reloadData;
 - (void)loadMoreData;
 - (void)registerCellWithNibName:(NSString *)nibName forCellReuseIdentifier:(NSString *)identifier;

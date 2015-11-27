@@ -32,6 +32,10 @@
     return [[ChooseView alloc] init];
 }
 
+- (void)setUpCurrentIndex:(NSInteger)currentIndex {
+    self.currentIndex = currentIndex;
+}
+
 - (instancetype)init {
     if (self = [super init]) {
         [self addPanGesture];
