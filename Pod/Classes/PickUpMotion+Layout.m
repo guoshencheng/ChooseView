@@ -21,8 +21,7 @@
 }
 
 - (void)moveViewWithMovement:(CGPoint)movement fromPickedView:(UIView *)pickedView {
-    self.view.center = [self centerOfView:pickedView withMovement:movement];
-    self.view.transform = CGAffineTransformMakeRotation(M_PI_4 / 2 * movement.x / 320.0);
+    [self updateViewWithPickedView:pickedView withMovement:movement];
     if ([self.delegate respondsToSelector:@selector(pickUpmotion:viewAlphaForMovement:)]) {
         self.view.alpha = [self.delegate pickUpmotion:self viewAlphaForMovement:movement];
     }
