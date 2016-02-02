@@ -42,8 +42,9 @@
 
 - (void)flyAwayFromView:(UIView *)view completion:(void (^)(BOOL finished))completion {
     CGPoint center = [self centerOutOfScreenAgainstView:view];
+    CGPoint movement = CGPointMake(center.x - [UIScreen mainScreen].bounds.size.width / 2, 0);
     [UIView animateWithDuration:0.25 animations:^{
-        self.view.center = center;
+        [self updateViewWithPickedView:view withMovement:movement];
     } completion:completion];
 }
 

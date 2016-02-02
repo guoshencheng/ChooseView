@@ -24,6 +24,16 @@
     }
 }
 
+- (CGFloat)anguleOfView:(UIView *)view withMovement:(CGPoint)movement {
+    return M_PI_4 / 2 * movement.x / [UIScreen mainScreen].bounds.size.width;
+}
+
+- (void)updateViewWithPickedView:(UIView *)pickedView withMovement:(CGPoint)movement {
+    CGFloat angle = [self anguleOfView:pickedView withMovement:movement];
+    self.view.center = [self centerOfView:pickedView withMovement:movement];
+    self.view.transform = CGAffineTransformMakeRotation(angle);
+}
+
 - (CGPoint)centerOfView:(UIView *)view withMovement:(CGPoint)movement {
     CGRect frame = [self frameOfView:view];
     CGSize size = frame.size;

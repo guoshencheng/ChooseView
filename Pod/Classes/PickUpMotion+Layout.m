@@ -17,7 +17,6 @@
     self.view = [[UIView alloc] initWithFrame:[self frameOfView:pickedView]];
     [self.view addSubview:[[UIImageView alloc] initWithImage:snapshot]];
     [self.view setBackgroundColor:[UIColor clearColor]];
-    [self.view.layer setMasksToBounds:YES];
     [[self.dataSource containerViewOfPickUpmotion:self] addSubview:self.view];
 }
 

@@ -21,6 +21,14 @@ typedef struct {
 - (CGRect)frameOfView:(UIView *)view;
 
 /**
+ * The new center angule of view in the container area with a certain movement
+ **/
+- (CGFloat)anguleOfView:(UIView *)view withMovement:(CGPoint)movement;
+/**
+ * update view with movement
+ **/
+- (void)updateViewWithPickedView:(UIView *)pickedView withMovement:(CGPoint)movement;
+/**
  * The new center position of view in the container area with a certain movement
  **/
 - (CGPoint)centerOfView:(UIView *)view withMovement:(CGPoint)movement;
