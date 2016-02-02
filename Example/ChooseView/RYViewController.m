@@ -45,6 +45,10 @@
     return 100;
 }
 
+- (CGRect)itemFameInChooseView:(ChooseView *)chooseView atIndex:(NSInteger)index {
+    return [UIScreen mainScreen].bounds;
+}
+
 - (UIView *)viewInChooseView:(ChooseView *)chooseView atIndex:(NSInteger)index {
     UIView *cell = [[UIView alloc] init];
     if (index % 2 == 0) {

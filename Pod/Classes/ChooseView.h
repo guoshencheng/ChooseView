@@ -32,6 +32,7 @@
 @required
 - (NSInteger)numberOfViewsInChooseView:(ChooseView *)chooseView;
 - (UIView *)viewInChooseView:(ChooseView *)chooseView atIndex:(NSInteger)index;
+- (CGRect)itemFameInChooseView:(ChooseView *)chooseView atIndex:(NSInteger)index;
 @end
 
 @protocol ChooseViewDelegate <NSObject>

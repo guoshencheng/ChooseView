@@ -102,7 +102,6 @@
 
 - (void)pickUpmotion:(PickUpMotion *)pickUpmotion didBeginMoveView:(UIView *)view {
     [self pickUpView];
-    self.nextView.hidden = YES;
     view.alpha = 0;
 }
 
@@ -144,14 +143,11 @@
     UIView *cell = [self viewWithIndex:self.currentIndex];
     [self setCell:cell atIndex:0];
     [self addSubview:cell];
-    [self addConstraintToCell:cell];
 }
 
 - (void)initNextCell {
     UIView *cell = [self viewWithIndex:self.currentIndex + 1];
     [self setCell:cell atIndex:1];
-    [self insertSubview:cell atIndex:0];
-    [self addConstraintToCell:cell];
 }
 
 - (void)generatePrepareView {
@@ -159,7 +155,7 @@
 }
 
 - (void)pushNextView {
-    self.nextView.hidden = NO;
+    [self insertSubview:self.nextView atIndex:0];
     [self.backView removeFromSuperview];
     [self removeCell:self.currentView];
     self.currentView = self.nextView;
@@ -169,7 +165,6 @@
     if (self.nextView) {
         [self insertSubview:self.nextView atIndex:0];
         [self resetCurrentView];
-        [self configureNextView];
     }
 }
 
@@ -193,6 +188,7 @@
 
 - (UIView *)viewWithIndex:(NSInteger)index {
     UIView *view = [self.datasource viewInChooseView:self atIndex:index];
+    view.frame = [self.datasource itemFameInChooseView:self atIndex:index];
     [self.pickUpMotion attachToView:view];
     return view;
 }

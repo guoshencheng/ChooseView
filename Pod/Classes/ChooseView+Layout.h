@@ -12,10 +12,8 @@
 
 - (void)clear;
 - (void)removeCell:(UIView *)cell;
-- (void)addConstraintToCell:(UIView *)cell;
 - (void)setCell:(UIView *)cell atIndex:(NSInteger)index;
 - (UIView *)cellOfIndex:(NSInteger)index;
 - (void)resetCurrentView;
-- (void)configureNextView;
 
 @end

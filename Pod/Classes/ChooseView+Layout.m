@@ -24,15 +24,6 @@
     //TODO insert cell into reusepool
 }
 
-- (void)addConstraintToCell:(UIView *)cell {
-    __weak typeof(self) weakSelf = self;
-    [cell mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(weakSelf).centerOffset(CGPointMake(0, 0));
-        make.width.equalTo(@(weakSelf.frame.size.width));
-        make.height.equalTo(@(weakSelf.frame.size.height));
-    }];
-}
-
 - (void)setCell:(UIView *)cell atIndex:(NSInteger)index {
     switch (index) {
         case 0:
@@ -64,22 +55,11 @@
     [self updateCurrentViewWithOffset:0];
 }
 
-- (void)configureNextView {
-    __weak typeof(self) weakSelf = self;
-    [self.nextView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(weakSelf).centerOffset(CGPointMake(0, 0));
-        make.width.equalTo(@(weakSelf.frame.size.width));
-        make.height.equalTo(@(weakSelf.frame.size.height));
-    }];
-}
-
 #pragma mark - PrivateMethod
 
 - (void)updateCurrentViewWithOffset:(CGFloat)offset {
-    __weak typeof(self) weakSelf = self;
-    [self.currentView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(weakSelf).centerOffset(CGPointMake(offset, fabs(offset) / self.frame.size.width * 20));
-    }];
+    CGSize size = self.currentView.superview.frame.size;
+    self.currentView.center = CGPointMake(size.width / 2 + offset, size.height / 2 + fabs(offset) / self.frame.size.width * 20);
     self.currentView.transform = CGAffineTransformMakeRotation(M_PI_4 / 2 * offset / self.frame.size.width);
     [self layoutIfNeeded];
 }
