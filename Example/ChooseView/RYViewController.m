@@ -42,7 +42,7 @@
 }
 
 - (NSInteger)numberOfViewsInChooseView:(ChooseView *)chooseView {
-    return self.array.count;
+    return 100;
 }
 
 - (UIView *)viewInChooseView:(ChooseView *)chooseView atIndex:(NSInteger)index {

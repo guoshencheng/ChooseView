@@ -13,6 +13,7 @@
 
 @interface ChooseView : UIView <UIGestureRecognizerDelegate>
 
+@property (strong, nonatomic) UIView *view;
 @property (strong, nonatomic) UIView *currentView;
 @property (strong, nonatomic) UIView *nextView;
 @property (weak, nonatomic) id<ChooseViewDatasource> datasource;
@@ -35,6 +36,7 @@
 
 @protocol ChooseViewDelegate <NSObject>
 @optional
+- (BOOL)chooseView:(ChooseView *)chooseView shouldIgnoreGesture:(UIGestureRecognizer *)gesture;
 - (void)chooseViewWillSlide:(ChooseView *)chooseView;
 - (void)chooseViewDidLoadedLastCell:(ChooseView *)chooseView;
 - (void)chooseView:(ChooseView *)chooseView didLikeOrNotCell:(BOOL)isLike atIndex:(NSInteger)index;

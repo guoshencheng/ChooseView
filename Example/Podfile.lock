@@ -1,7 +1,7 @@
 PODS:
   - ChooseView (0.1.0):
     - Masonry
-  - Masonry (0.6.3)
+  - Masonry (0.6.4)
 
 DEPENDENCIES:
   - ChooseView (from `../`)
@@ -12,6 +12,6 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   ChooseView: ece865cb2d9a70a0638e008e8694f551a42052e5
-  Masonry: ff105a956abcd19a618b2028b121cb638d7a8e2f
+  Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
 
 COCOAPODS: 0.39.0
