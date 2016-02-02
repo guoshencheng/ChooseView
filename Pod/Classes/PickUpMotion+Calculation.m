@@ -31,7 +31,7 @@
 - (void)updateViewWithPickedView:(UIView *)pickedView withMovement:(CGPoint)movement {
     CGFloat angle = [self anguleOfView:pickedView withMovement:movement];
     self.view.center = [self centerOfView:pickedView withMovement:movement];
-    self.view.transform = CGAffineTransformMakeRotation(angle);
+//    self.view.transform = CGAffineTransformMakeRotation(angle);
 }
 
 - (CGPoint)centerOfView:(UIView *)view withMovement:(CGPoint)movement {

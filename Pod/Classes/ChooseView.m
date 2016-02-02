@@ -96,13 +96,12 @@
 }
 
 - (void)pickUpmotion:(PickUpMotion *)pickUpmotion willBeginMoveView:(UIView *)view {
-//    view.alpha = 0;
    self.direction = 0;
 }
 
 - (void)pickUpmotion:(PickUpMotion *)pickUpmotion didBeginMoveView:(UIView *)view {
     [self pickUpView];
-    view.alpha = 0;
+    view.hidden = YES;
 }
 
 - (void)pickUpmotion:(PickUpMotion *)pickUpmotion didMoveView:(UIView *)view withMovement:(CGPoint)movement {
