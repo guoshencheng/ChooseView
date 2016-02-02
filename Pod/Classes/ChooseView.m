@@ -163,7 +163,6 @@
     self.nextView = self.prepareView;
     self.prepareView = nil;
     if (self.nextView) {
-        [self insertSubview:self.nextView atIndex:0];
         [self resetCurrentView];
     }
 }
