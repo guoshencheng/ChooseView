@@ -13,9 +13,9 @@
 
 @interface ChooseView : UIView <UIGestureRecognizerDelegate>
 
-@property (strong, nonatomic) UIView *view;
 @property (strong, nonatomic) UIView *currentView;
 @property (strong, nonatomic) UIView *nextView;
+@property (strong, nonatomic) UIImageView *backView;
 @property (weak, nonatomic) id<ChooseViewDatasource> datasource;
 @property (weak, nonatomic) id<ChooseViewDelegate> delegate;
 

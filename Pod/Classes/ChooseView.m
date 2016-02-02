@@ -101,6 +101,8 @@
 }
 
 - (void)pickUpmotion:(PickUpMotion *)pickUpmotion didBeginMoveView:(UIView *)view {
+    [self pickUpView];
+    self.nextView.hidden = YES;
     view.alpha = 0;
 }
 
@@ -116,6 +118,11 @@
         if ([self.delegate respondsToSelector:@selector(chooseView:didSlideLeftWithOffset:)]) {
             [self.delegate chooseView:self didSlideLeftWithOffset:fabs(movement.x)];
         }
+    }
+    if ((self.direction == 0 || self.direction == -1) && movement.x > 0) {
+        [self changeToDirection:1];
+    } else if ((self.direction == 0 || self.direction == 1) && movement.x < 0) {
+        [self changeToDirection:-1];
     }
 }
 
@@ -152,6 +159,8 @@
 }
 
 - (void)pushNextView {
+    self.nextView.hidden = NO;
+    [self.backView removeFromSuperview];
     [self removeCell:self.currentView];
     self.currentView = self.nextView;
     self.currentIndex ++;
@@ -189,6 +198,22 @@
 }
 
 #pragma mark -- Tools
+
+- (void)pickUpView {
+    [self.backView removeFromSuperview];
+    UIImage *snapshot = [self imageWithView:self.nextView];
+    self.backView = [[UIImageView alloc] initWithImage:snapshot];
+    [self.backView setBackgroundColor:[UIColor clearColor]];
+    [self insertSubview:self.backView atIndex:0];
+}
+
+- (UIImage *)imageWithView:(UIView *)view {
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, 0.0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
 
 - (BOOL)isCellOver {
     return self.currentIndex + 1 >= self.cellNumber;
