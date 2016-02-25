@@ -60,8 +60,8 @@
     return cell;
 }
 
-- (void)chooseView:(ChooseView *)chooseView didLikeOrNotCell:(BOOL)isLike atIndex:(NSInteger)index {
-    NSString *string = isLike ? @"like " : @"unLike";
+- (void)chooseView:(ChooseView *)chooseView slideDirection:(ChooseViewSlideDirection)direction atIndex:(NSInteger)index {
+    NSString *string = direction == ChooseViewSlideDirectionRight ? @"like " : @"unLike";
     NSLog(@"%@ in index : %@", string, @(index));
     if (index >= self.array.count - 2) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
@@ -83,10 +83,6 @@
         default:
             break;
     }
-}
-
-- (void)chooseView:(ChooseView *)chooseView didEndVerticalSlideWithOffset:(CGFloat)offset index:(NSInteger)index {
-    NSLog(@"%@", @(offset));
 }
 
 @end

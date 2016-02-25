@@ -181,24 +181,28 @@
 
 - (void)handlePushToRight {
     __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.1 animations:^{
-        [self updateCurrentViewWithOffset:weakSelf.frame.size.width * 1.5];
+    [UIView animateWithDuration:0.15 animations:^{
+        [self updateCurrentViewWithOffset:weakSelf.frame.size.width * 2];
     } completion:^(BOOL finished) {
-        [self pushNextView];
-        if ([self.delegate respondsToSelector:@selector(chooseView:slideDirection:atIndex:)]) {
-            [self.delegate chooseView:self slideDirection:ChooseViewSlideDirectionRight atIndex:self.currentIndex - 1];
+        if (finished) {
+            [self pushNextView];
+            if ([self.delegate respondsToSelector:@selector(chooseView:slideDirection:atIndex:)]) {
+                [self.delegate chooseView:self slideDirection:ChooseViewSlideDirectionRight atIndex:self.currentIndex - 1];
+            }
         }
     }];
 }
 
 - (void)handlePushToLeft {
     __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.1 animations:^{
-        [weakSelf updateCurrentViewWithOffset:-weakSelf.frame.size.width * 1.5];
+    [UIView animateWithDuration:0.15 animations:^{
+        [weakSelf updateCurrentViewWithOffset:-weakSelf.frame.size.width * 2];
     } completion:^(BOOL finished) {
-        [self pushNextView];
-        if ([self.delegate respondsToSelector:@selector(chooseView:slideDirection:atIndex:)]) {
-            [self.delegate chooseView:self slideDirection:ChooseViewSlideDirectionLeft atIndex:self.currentIndex - 1];
+        if (finished) {
+            [self pushNextView];
+            if ([self.delegate respondsToSelector:@selector(chooseView:slideDirection:atIndex:)]) {
+                [self.delegate chooseView:self slideDirection:ChooseViewSlideDirectionLeft atIndex:self.currentIndex - 1];
+            }
         }
     }];
 }
@@ -221,7 +225,7 @@
 
 - (void)recover {
     __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.2 animations:^{
+    [UIView animateWithDuration:0.15 animations:^{
         [weakSelf updateCurrentViewWithOffset:0];
     } completion:^(BOOL finished) {
         if ([self.delegate respondsToSelector:@selector(chooseViewDidRecover:)]) {
