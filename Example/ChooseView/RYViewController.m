@@ -72,6 +72,19 @@
     }
 }
 
+- (void)chooseView:(ChooseView *)chooseView swipeDirection:(UISwipeGestureRecognizerDirection)direction index:(NSInteger)index {
+    switch (direction) {
+        case UISwipeGestureRecognizerDirectionUp:
+            NSLog(@"up");
+            break;
+        case UISwipeGestureRecognizerDirectionDown:
+            NSLog(@"down");
+            break;
+        default:
+            break;
+    }
+}
+
 - (void)chooseView:(ChooseView *)chooseView didEndVerticalSlideWithOffset:(CGFloat)offset index:(NSInteger)index {
     NSLog(@"%@", @(offset));
 }

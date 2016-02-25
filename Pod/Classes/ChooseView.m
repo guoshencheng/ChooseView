@@ -7,46 +7,37 @@
 //
 
 #import "ChooseView.h"
-#import "PickUpMotion.h"
 #import "Masonry.h"
-#import "ChooseView+Layout.h"
+#define TRIGGER_SENSITIVITY 1.3
 
-@implementation UIView (ChooseView)
+@interface ChooseView ()
 
-
-@end
-
-@interface ChooseView () <PickUpMotionDataSource, PickUpMotionDelegate>
-
-@property (strong, nonatomic) PickUpMotion *pickUpMotion;
 @property (strong, nonatomic) NSMutableDictionary *reusabelCellIdDictionary;
 @property (strong, nonatomic) UIView *prepareView;
+@property (assign, nonatomic) CGPoint panGestureStartLocation;
+@property (assign, nonatomic) CGPoint swipeGestureStartLocation;
 @property (assign, nonatomic) NSInteger cellNumber;
-@property (assign, nonatomic) NSInteger currentIndex;
-@property (assign, nonatomic) NSInteger direction;
+@property (assign, nonatomic) ChooseViewSlideDirection direction;
 
 @end
 
 @implementation ChooseView
 
-#pragma mark - LiveCycle
-
 + (instancetype)create {
     return [[ChooseView alloc] init];
 }
 
-- (instancetype)init {
-    if (self = [super init]) {
-        [self initProperties];
-        [self configrePickUpMotion];
-    }
-    return self;
-}
-
-#pragma mark - PublicMethod
-
 - (void)setUpCurrentIndex:(NSInteger)currentIndex {
     self.currentIndex = currentIndex;
+}
+
+- (instancetype)init {
+    if (self = [super init]) {
+        [self addPanGesture];
+        [self addSwipeGesture];
+        [self initProperties];
+    }
+    return self;
 }
 
 - (void)setDatasource:(id<ChooseViewDatasource>)datasource {
@@ -60,9 +51,9 @@
     NSInteger abledCellCount = [self abledCellCount];
     for (int i = 0; i < abledCellCount; i++) {
         if (i == 0) {
-            [self initCurrentCell];
+            [self generateCurrentView];
         } else {
-            [self initNextCell];
+            [self generateNextView];
         }
     }
 }
@@ -72,15 +63,11 @@
     [self removeCell:self.nextView];
     NSInteger abledCellCount = [self abledCellCount];
     if (abledCellCount > 1) {
-        [self initNextCell];
+        [self generateCurrentView];
     }
     if (!self.currentView) {
-        [self initCurrentCell];
+        [self generateNextView];
     }
-}
-
-- (void)registerCellWithNibName:(NSString *)nibName forCellReuseIdentifier:(NSString *)identifier {
-    [self.reusabelCellIdDictionary setValue:nibName forKey:identifier];
 }
 
 - (UIView *)dequeueReusableCellWithReuseIdentifier:(NSString *)identifier forIndex:(NSInteger)index {
@@ -89,73 +76,138 @@
     return view;
 }
 
-#pragma mark - PickUpMotion
-
-- (UIView *)containerViewOfPickUpmotion:(PickUpMotion *)pickUpmotion {
-    return self;
+- (void)registerCellWithNibName:(NSString *)nibName forCellReuseIdentifier:(NSString *)identifier {
+    [self.reusabelCellIdDictionary setValue:nibName forKey:identifier];
 }
 
-- (void)pickUpmotion:(PickUpMotion *)pickUpmotion willBeginMoveView:(UIView *)view {
-   self.direction = 0;
-}
 
-- (void)pickUpmotion:(PickUpMotion *)pickUpmotion didBeginMoveView:(UIView *)view {
-    [self pickUpView];
-    view.hidden = YES;
-}
+#pragma mark - UIGestureRecognizerDelegate
 
-- (void)pickUpmotion:(PickUpMotion *)pickUpmotion didMoveView:(UIView *)view withMovement:(CGPoint)movement {
-    if (![self isCellOver] && ![self loadToEnd]) {
-        [self generatePrepareView];
-    }
-    if (movement.x > 0) {
-        if ([self.delegate respondsToSelector:@selector(chooseView:didSlideRightWithOffset:)]) {
-            [self.delegate chooseView:self didSlideRightWithOffset:fabs(movement.x)];
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        UIPanGestureRecognizer *gesture = (UIPanGestureRecognizer *)gestureRecognizer;
+        if (![self shouldIgnoreGesture:gesture]) {
+            [gestureRecognizer addTarget:self action:@selector(panGestureAction:)];
         }
+    }
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
+#pragma mark - PanGestureRecognizer Action
+
+- (void)swipeGestureAction:(UISwipeGestureRecognizer *)gesture {
+    if ([self.delegate respondsToSelector:@selector(chooseView:swipeDirection:index:)]) {
+        [self.delegate chooseView:self swipeDirection:gesture.direction index:self.currentIndex];
+    }
+}
+
+- (void)panGestureAction:(UIPanGestureRecognizer *)gesture {
+    switch ([gesture state]) {
+        case UIGestureRecognizerStateBegan:{
+            [self panGestureDidBegin:gesture];
+            break;
+        }
+        case UIGestureRecognizerStateChanged: {
+            [self panGestureDidMove:gesture];
+            break;
+        }
+        case UIGestureRecognizerStateEnded: {
+            [self panGestureDidEnd:gesture];
+            break;
+        }
+        case UIGestureRecognizerStateCancelled:
+        case UIGestureRecognizerStateFailed:
+        case UIGestureRecognizerStatePossible:
+//            [self panGestureDidEnd:gesture];
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)panGestureDidBegin:(UIPanGestureRecognizer *)gesture {
+    self.panGestureStartLocation = [gesture locationInView:self];
+    [self generatePrepareView];
+    if ([self.delegate respondsToSelector:@selector(chooseViewWillSlide:)]) {
+        [self.delegate chooseViewWillSlide:self];
+    }
+}
+
+- (void)panGestureDidMove:(UIPanGestureRecognizer *)gesture {
+    CGFloat xOffset = [gesture locationInView:self].x - self.panGestureStartLocation.x;
+    if ((self.direction == ChooseViewSlideDirectionOrigin || self.direction == ChooseViewSlideDirectionLeft) && xOffset > 0) {
+        [self changeToDirection:ChooseViewSlideDirectionRight];
+    } else if ((self.direction == ChooseViewSlideDirectionOrigin || self.direction == ChooseViewSlideDirectionRight) && xOffset < 0) {
+        [self changeToDirection:ChooseViewSlideDirectionLeft];
+    }
+    [self updateCurrentViewWithOffset:xOffset];
+}
+
+- (void)panGestureDidEnd:(UIPanGestureRecognizer *)gesture {
+    CGFloat xOffset = [gesture locationInView:self].x - self.panGestureStartLocation.x;
+    if (xOffset > self.frame.size.width / 3) {
+        [self handlePushToRight];
+    } else if(xOffset < -self.frame.size.width / 3) {
+        [self handlePushToLeft];
     } else {
-        if ([self.delegate respondsToSelector:@selector(chooseView:didSlideLeftWithOffset:)]) {
-            [self.delegate chooseView:self didSlideLeftWithOffset:fabs(movement.x)];
-        }
+        [self recover];
     }
-    if ((self.direction == 0 || self.direction == -1) && movement.x > 0) {
-        [self changeToDirection:1];
-    } else if ((self.direction == 0 || self.direction == 1) && movement.x < 0) {
-        [self changeToDirection:-1];
-    }
-}
-
-- (void)pickUpmotion:(PickUpMotion *)pickUpmotion willEndMoveView:(UIView *)view withMovement:(CGPoint)movement {
-    [self pushNextView];
-}
-
-- (void)changeToDirection:(NSInteger)direction {
-    NSInteger lastDirection = self.direction;
-    self.direction = direction;
-    if ([self.delegate respondsToSelector:@selector(chooseView:changeDirection:fromDirection:)]) {
-        [self.delegate chooseView:self changeDirection:self.direction fromDirection:lastDirection];
-    }
+    [gesture removeTarget:self action:@selector(panGestureAction:)];
 }
 
 #pragma mark - PrivateMethod
 
-- (void)initCurrentCell {
-    UIView *cell = [self viewWithIndex:self.currentIndex];
-    [self setCell:cell atIndex:0];
-    [self addSubview:cell];
+- (NSInteger)abledCellCount {
+    NSInteger count = self.cellNumber;
+    return (count < 2) ? count : 2;
 }
 
-- (void)initNextCell {
-    UIView *cell = [self viewWithIndex:self.currentIndex + 1];
-    [self setCell:cell atIndex:1];
+- (void)clear {
+    [self removeCell:self.currentView];
+    [self removeCell:self.nextView];
+    self.currentView = nil;
+    self.nextView = nil;
 }
 
-- (void)generatePrepareView {
-    self.prepareView = [self viewWithIndex:self.currentIndex + 2];;
+- (void)updateCellNumber {
+    NSInteger cellNumber = [self.datasource numberOfViewsInChooseView:self];
+    self.currentIndex = (cellNumber >= self.cellNumber) ? self.currentIndex : 0;
+    self.cellNumber = cellNumber;
+}
+
+- (void)handlePushToRight {
+    __weak typeof(self) weakSelf = self;
+    [UIView animateWithDuration:0.2 animations:^{
+        [self updateCurrentViewWithOffset:weakSelf.frame.size.width * 1.5];
+    } completion:^(BOOL finished) {
+        [self pushNextView];
+        if ([self.delegate respondsToSelector:@selector(chooseView:slideDirection:atIndex:)]) {
+            [self.delegate chooseView:self slideDirection:ChooseViewSlideDirectionRight atIndex:self.currentIndex - 1];
+        }
+    }];
+}
+
+- (void)handlePushToLeft {
+    __weak typeof(self) weakSelf = self;
+    [UIView animateWithDuration:0.2 animations:^{
+        [weakSelf updateCurrentViewWithOffset:-weakSelf.frame.size.width * 1.5];
+    } completion:^(BOOL finished) {
+        [self pushNextView];
+        if ([self.delegate respondsToSelector:@selector(chooseView:slideDirection:atIndex:)]) {
+            [self.delegate chooseView:self slideDirection:ChooseViewSlideDirectionLeft atIndex:self.currentIndex - 1];
+        }
+    }];
+}
+
+- (void)resetCurrentView {
+    [self updateCurrentViewWithOffset:0];
 }
 
 - (void)pushNextView {
-    [self insertSubview:self.nextView atIndex:0];
-    [self.backView removeFromSuperview];
     [self removeCell:self.currentView];
     self.currentView = self.nextView;
     self.currentIndex ++;
@@ -163,6 +215,54 @@
     self.prepareView = nil;
     if (self.nextView) {
         [self resetCurrentView];
+        [self addConstraintToCell:self.nextView];
+    }
+}
+
+- (void)recover {
+    __weak typeof(self) weakSelf = self;
+    [UIView animateWithDuration:0.2 animations:^{
+        [weakSelf updateCurrentViewWithOffset:0];
+    } completion:^(BOOL finished) {
+        if ([self.delegate respondsToSelector:@selector(chooseViewDidRecover:)]) {
+            [self.delegate chooseViewDidRecover:self];
+        }
+    }];
+}
+
+- (void)updateCurrentViewWithOffset:(CGFloat)offset {
+    __weak typeof(self) weakSelf = self;
+    [self.currentView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(weakSelf).centerOffset(CGPointMake(offset, fabs(offset) / self.frame.size.width * 20));
+    }];
+    self.currentView.transform = CGAffineTransformMakeRotation(M_PI_4 / 2 * offset / self.frame.size.width);
+    [self layoutIfNeeded];
+}
+
+- (void)addConstraintToCell:(UIView *)cell {
+    [self insertSubview:cell atIndex:0];
+    __weak typeof(self) weakSelf = self;
+    [cell mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(weakSelf).centerOffset(CGPointMake(0, 0));
+        make.width.equalTo(@(weakSelf.frame.size.width));
+        make.height.equalTo(@(weakSelf.frame.size.height));
+    }];
+    [self layoutIfNeeded];
+}
+
+- (void)generateNextView {
+    self.currentView = [self.datasource viewInChooseView:self atIndex:self.currentIndex];
+    [self addConstraintToCell:self.currentView];
+}
+
+- (void)generateCurrentView {
+    self.nextView = [self.datasource viewInChooseView:self atIndex:self.currentIndex + 1];
+    [self addConstraintToCell:self.nextView];
+}
+
+- (void)generatePrepareView {
+    if (![self isCellOver] && ![self loadToEnd]) {
+         self.prepareView = [self.datasource viewInChooseView:self atIndex:self.currentIndex + 2];
     }
 }
 
@@ -172,58 +272,65 @@
     self.direction = 0;
 }
 
-- (void)configrePickUpMotion {
-    self.pickUpMotion = [PickUpMotion new];
-    self.pickUpMotion.animationType = PickUpMotionAnimationFlyAway;
-    self.pickUpMotion.delegate = self;
-    self.pickUpMotion.dataSource = self;
+- (void)changeToDirection:(ChooseViewSlideDirection)direction {
+    ChooseViewSlideDirection lastDirection = self.direction;
+    self.direction = direction;
+    if ([self.delegate respondsToSelector:@selector(chooseView:changeDirection:fromDirection:)]) {
+        [self.delegate chooseView:self changeDirection:self.direction fromDirection:lastDirection];
+    }
 }
 
-- (NSInteger)abledCellCount {
-    NSInteger count = self.cellNumber;
-    return (count < 2) ? count : 2;
+- (void)addSwipeGesture {
+    UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureAction:)];
+    [swipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
+    [self addGestureRecognizer:swipeUp];
+    UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureAction:)];
+    [swipeDown setDirection:UISwipeGestureRecognizerDirectionDown];
+    [self addGestureRecognizer:swipeDown];
 }
 
-- (UIView *)viewWithIndex:(NSInteger)index {
-    UIView *view = [self.datasource viewInChooseView:self atIndex:index];
-    view.frame = [self.datasource itemFameInChooseView:self atIndex:index];
-    [self.pickUpMotion attachToView:view];
-    return view;
+- (void)addPanGesture {
+    for (UIGestureRecognizer *gestureRecognizer in self.gestureRecognizers) {
+        if (gestureRecognizer.delegate == self && [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+            return; // skip if already attached
+        }
+    }
+    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:nil];
+    panRecognizer.delegate = self;
+    [self addGestureRecognizer:panRecognizer];
 }
 
-#pragma mark -- Tools
-
-- (void)pickUpView {
-    [self.backView removeFromSuperview];
-    UIImage *snapshot = [self imageWithView:self.nextView];
-    self.backView = [[UIImageView alloc] initWithImage:snapshot];
-    [self.backView setBackgroundColor:[UIColor clearColor]];
-    [self insertSubview:self.backView atIndex:0];
-}
-
-- (UIImage *)imageWithView:(UIView *)view {
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, 0.0);
-    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
+- (BOOL)shouldIgnoreGesture:(UIPanGestureRecognizer *)gesture {
+    CGPoint velocity = [gesture velocityInView:self];
+    //MotionHorizontal
+    if (!self.currentView) {
+        return YES;
+    }
+    BOOL shouldIgnoreGesture = ABS(velocity.y * TRIGGER_SENSITIVITY) > ABS(velocity.x);
+    if (shouldIgnoreGesture) {
+        return YES;
+    } else {
+        if ([self.delegate respondsToSelector:@selector(chooseView:shouldIgnoreGesture:)]) {
+            return shouldIgnoreGesture && [self.delegate chooseView:self shouldIgnoreGesture:gesture];
+        } else {
+            return NO;
+        }
+    }
 }
 
 - (BOOL)isCellOver {
-    return self.currentIndex + 1 >= self.cellNumber;
+    return self.currentIndex + 1 >= [self.datasource numberOfViewsInChooseView:self];
 }
 
 - (BOOL)loadToEnd {
-    return self.currentIndex + 2 >= self.cellNumber;
+    return self.currentIndex + 2 >= [self.datasource numberOfViewsInChooseView:self];
 }
 
-- (void)updateCellNumber {
-    NSInteger cellNumber = [self.datasource numberOfViewsInChooseView:self];
-    self.currentIndex = (cellNumber > self.cellNumber) ? self.currentIndex : 0;
-    self.cellNumber = cellNumber;
-    
+- (void)removeCell:(UIView *)cell {
+    [cell.layer removeAllAnimations];
+    [cell removeFromSuperview];
+    //TODO insert cell into reusepool
 }
-
 
 @end
 
