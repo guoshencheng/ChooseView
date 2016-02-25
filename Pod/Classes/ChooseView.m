@@ -149,6 +149,9 @@
 
 - (void)panGestureDidEnd:(UIPanGestureRecognizer *)gesture {
     CGFloat xOffset = [gesture locationInView:self].x - self.panGestureStartLocation.x;
+    if ([self.delegate respondsToSelector:@selector(chooseViewDidEndSlide:offset:index:)]) {
+        [self.delegate chooseViewDidEndSlide:self offset:xOffset index:self.currentIndex];
+    }
     if (xOffset > self.frame.size.width / 4) {
         [self handlePushToRight];
     } else if(xOffset < -self.frame.size.width / 4) {
