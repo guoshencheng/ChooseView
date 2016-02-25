@@ -149,9 +149,9 @@
 
 - (void)panGestureDidEnd:(UIPanGestureRecognizer *)gesture {
     CGFloat xOffset = [gesture locationInView:self].x - self.panGestureStartLocation.x;
-    if (xOffset > self.frame.size.width / 3) {
+    if (xOffset > self.frame.size.width / 4) {
         [self handlePushToRight];
-    } else if(xOffset < -self.frame.size.width / 3) {
+    } else if(xOffset < -self.frame.size.width / 4) {
         [self handlePushToLeft];
     } else {
         [self recover];
@@ -181,7 +181,7 @@
 
 - (void)handlePushToRight {
     __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.2 animations:^{
+    [UIView animateWithDuration:0.1 animations:^{
         [self updateCurrentViewWithOffset:weakSelf.frame.size.width * 1.5];
     } completion:^(BOOL finished) {
         [self pushNextView];
@@ -193,7 +193,7 @@
 
 - (void)handlePushToLeft {
     __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.2 animations:^{
+    [UIView animateWithDuration:0.1 animations:^{
         [weakSelf updateCurrentViewWithOffset:-weakSelf.frame.size.width * 1.5];
     } completion:^(BOOL finished) {
         [self pushNextView];
