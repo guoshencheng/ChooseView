@@ -131,6 +131,7 @@
 
 - (void)panGestureDidBegin:(UIPanGestureRecognizer *)gesture {
     self.panGestureStartLocation = [gesture locationInView:self];
+    self.direction = ChooseViewSlideDirectionOrigin;
     [self generatePrepareView];
     if ([self.delegate respondsToSelector:@selector(chooseViewWillSlide:)]) {
         [self.delegate chooseViewWillSlide:self];
