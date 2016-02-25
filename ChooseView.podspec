@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "ChooseView"
-  s.version          = "0.1.0"
+  s.version          = "1.0.0"
   s.summary          = "A short description of ChooseView."
 
 # This description is used to generate tags and improve search results.
@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "guoshencheng" => "648772021@qq.com" }
-  s.source           = { :git => "https://github.com/<GITHUB_USERNAME>/ChooseView.git", :tag => s.version.to_s }
+  s.source           = { :git => "https://github.com/guoshencheng/ChooseView.git", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.platform     = :ios, '7.0'
