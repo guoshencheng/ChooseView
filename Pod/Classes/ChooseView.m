@@ -251,13 +251,13 @@
 }
 
 - (void)generateNextView {
-    self.currentView = [self.datasource viewInChooseView:self atIndex:self.currentIndex];
-    [self addConstraintToCell:self.currentView];
+    self.nextView = [self.datasource viewInChooseView:self atIndex:self.currentIndex + 1];
+    [self addConstraintToCell:self.nextView];
 }
 
 - (void)generateCurrentView {
-    self.nextView = [self.datasource viewInChooseView:self atIndex:self.currentIndex + 1];
-    [self addConstraintToCell:self.nextView];
+    self.currentView = [self.datasource viewInChooseView:self atIndex:self.currentIndex];
+    [self addConstraintToCell:self.currentView];
 }
 
 - (void)generatePrepareView {

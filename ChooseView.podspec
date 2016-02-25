@@ -9,20 +9,17 @@
 Pod::Spec.new do |s|
   s.name             = "ChooseView"
   s.version          = "1.0.0"
-  s.summary          = "A short description of ChooseView."
+  s.summary          = "a container view for chooseing"
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
 #   * Try to keep it short, snappy and to the point.
 #   * Write the description between the DESC delimiters below.
 #   * Finally, don't worry about the indent, CocoaPods strips it!  
-  s.description      = <<-DESC
-                       DESC
-
-  s.homepage         = "https://github.com/gushencheng/ChooseView"
+  s.homepage         = "https://github.com/guoshencheng/ChooseView"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
-  s.author           = { "guoshencheng" => "648772021@qq.com" }
+  s.author           = { "guoshencheng" => "guoshencheng1@gmail.com" }
   s.source           = { :git => "https://github.com/guoshencheng/ChooseView.git", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
