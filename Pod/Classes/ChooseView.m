@@ -311,7 +311,7 @@
         return YES;
     } else {
         if ([self.delegate respondsToSelector:@selector(chooseView:shouldIgnoreGesture:)]) {
-            return shouldIgnoreGesture && [self.delegate chooseView:self shouldIgnoreGesture:gesture];
+            return [self.delegate chooseView:self shouldIgnoreGesture:gesture];
         } else {
             return NO;
         }
