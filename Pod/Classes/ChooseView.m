@@ -184,7 +184,7 @@
 - (void)handlePushToRight {
     self.isFlyout = YES;
     __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.15 animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         [self updateCurrentViewWithOffset:weakSelf.frame.size.width * 2];
     } completion:^(BOOL finished) {
         if (finished) {
@@ -199,7 +199,7 @@
 - (void)handlePushToLeft {
     self.isFlyout = YES;
     __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.15 animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         [weakSelf updateCurrentViewWithOffset:-weakSelf.frame.size.width * 2];
     } completion:^(BOOL finished) {
         if (finished) {
@@ -229,6 +229,7 @@
 }
 
 - (void)recover {
+    self.isFlyout = NO;
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.15 animations:^{
         [weakSelf updateCurrentViewWithOffset:0];
