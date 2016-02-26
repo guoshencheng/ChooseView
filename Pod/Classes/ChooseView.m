@@ -14,10 +14,11 @@
 
 @property (strong, nonatomic) NSMutableDictionary *reusabelCellIdDictionary;
 @property (strong, nonatomic) UIView *prepareView;
+@property (assign, nonatomic) NSInteger cellNumber;
 @property (assign, nonatomic) CGPoint panGestureStartLocation;
 @property (assign, nonatomic) CGPoint swipeGestureStartLocation;
-@property (assign, nonatomic) NSInteger cellNumber;
 @property (assign, nonatomic) ChooseViewSlideDirection direction;
+@property (assign, nonatomic) BOOL isFlyout;
 
 @end
 
@@ -63,9 +64,6 @@
     [self removeCell:self.nextView];
     NSInteger abledCellCount = [self abledCellCount];
     if (abledCellCount > 1) {
-        [self generateCurrentView];
-    }
-    if (!self.currentView) {
         [self generateNextView];
     }
 }
@@ -184,6 +182,7 @@
 }
 
 - (void)handlePushToRight {
+    self.isFlyout = YES;
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.15 animations:^{
         [self updateCurrentViewWithOffset:weakSelf.frame.size.width * 2];
@@ -198,6 +197,7 @@
 }
 
 - (void)handlePushToLeft {
+    self.isFlyout = YES;
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.15 animations:^{
         [weakSelf updateCurrentViewWithOffset:-weakSelf.frame.size.width * 2];
@@ -225,6 +225,7 @@
         [self resetCurrentView];
         [self addConstraintToCell:self.nextView];
     }
+    self.isFlyout = NO;
 }
 
 - (void)recover {
@@ -278,6 +279,7 @@
     self.reusabelCellIdDictionary = [[NSMutableDictionary alloc] init];
     self.currentIndex = 0;
     self.direction = 0;
+    self.isFlyout = NO;
 }
 
 - (void)changeToDirection:(ChooseViewSlideDirection)direction {
@@ -311,7 +313,7 @@
 - (BOOL)shouldIgnoreGesture:(UIPanGestureRecognizer *)gesture {
     CGPoint velocity = [gesture velocityInView:self];
     //MotionHorizontal
-    if (!self.currentView) {
+    if (!self.currentView || self.isFlyout) {
         return YES;
     }
     BOOL shouldIgnoreGesture = ABS(velocity.y * TRIGGER_SENSITIVITY) > ABS(velocity.x);
