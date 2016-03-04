@@ -314,7 +314,7 @@
 - (BOOL)shouldIgnoreGesture:(UIPanGestureRecognizer *)gesture {
     CGPoint velocity = [gesture velocityInView:self];
     //MotionHorizontal
-    if (!self.currentView || self.isFlyout) {
+    if (!self.currentView) {
         return YES;
     }
     BOOL shouldIgnoreGesture = ABS(velocity.y * TRIGGER_SENSITIVITY) > ABS(velocity.x);
