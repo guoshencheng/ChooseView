@@ -148,20 +148,35 @@
 
 - (void)panGestureDidEnd:(UIPanGestureRecognizer *)gesture {
     CGFloat xOffset = [gesture locationInView:self].x - self.panGestureStartLocation.x;
-    if ([self.delegate respondsToSelector:@selector(chooseViewDidEndSlide:offset:index:)]) {
-        [self.delegate chooseViewDidEndSlide:self offset:xOffset index:self.currentIndex];
+    ChooseViewSlideDirection direction = [self directionWithOffset:xOffset];
+    if ([self.delegate respondsToSelector:@selector(chooseViewDidEndSlide:direction:index:)]) {
+        [self.delegate chooseViewDidEndSlide:self direction:direction index:self.currentIndex];
     }
-    if (xOffset > self.frame.size.width / 4) {
-        [self handlePushToRight];
-    } else if(xOffset < -self.frame.size.width / 4) {
-        [self handlePushToLeft];
-    } else {
-        [self recover];
+    switch (direction) {
+        case ChooseViewSlideDirectionRight:
+            [self handlePushToRight];
+            break;
+        case ChooseViewSlideDirectionLeft:
+            [self handlePushToLeft];
+            break;
+        default:
+            [self recover];
+            break;
     }
     [gesture removeTarget:self action:@selector(panGestureAction:)];
 }
 
 #pragma mark - PrivateMethod
+
+- (ChooseViewSlideDirection)directionWithOffset:(CGFloat)offset {
+    if (offset > self.frame.size.width / 4) {
+        return ChooseViewSlideDirectionRight;
+    } else if(offset < -self.frame.size.width / 4) {
+        return ChooseViewSlideDirectionLeft;
+    } else {
+        return ChooseViewSlideDirectionOrigin;
+    }
+}
 
 - (NSInteger)abledCellCount {
     NSInteger count = self.cellNumber;
