@@ -234,7 +234,7 @@
     [self removeCell:self.currentView];
     self.currentView = self.nextView;
     self.currentIndex ++;
-    self.nextView = self.prepareView;
+    self.nextView = !!self.prepareView ? self.prepareView : [self.datasource viewInChooseView:self atIndex:self.currentIndex + 1];
     self.prepareView = nil;
     if (self.nextView) {
         [self resetCurrentView];
