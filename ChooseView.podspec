@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "ChooseView"
-  s.version          = "1.2.1"
+  s.version          = "1.2.2"
   s.summary          = "a container view for chooseing" 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -26,10 +26,6 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.source_files = 'Pod/Classes/**/*'
-  s.resource_bundles = {
-    'ChooseView' => ['Pod/Assets/*.png']
-  }
-
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
     s.dependency 'Masonry'
