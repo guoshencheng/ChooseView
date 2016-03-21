@@ -1,5 +1,5 @@
 PODS:
-  - ChooseView (1.1.1):
+  - ChooseView (1.2.3):
     - Masonry
   - Masonry (0.6.4)
 
@@ -11,7 +11,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  ChooseView: 7fca3c0ab0b643f733e45773772cafd2749bc51c
+  ChooseView: 657d1bb1fd2894d2bb3928420d871f53d5bd53ca
   Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
 
 COCOAPODS: 0.39.0

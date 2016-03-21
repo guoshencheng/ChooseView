@@ -43,7 +43,7 @@ typedef enum : NSUInteger {
 
 @protocol ChooseViewDelegate <NSObject>
 @optional
-
+- (void)chooseView:(ChooseView *)chooseView didSlideWithOffset:(CGFloat)offset;
 - (void)chooseViewWillSlide:(ChooseView *)chooseView;
 - (void)chooseViewDidRecover:(ChooseView *)chooseView;
 - (BOOL)chooseView:(ChooseView *)chooseView shouldIgnoreGesture:(UIGestureRecognizer *)gesure;

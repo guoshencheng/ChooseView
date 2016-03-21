@@ -143,6 +143,9 @@
     } else if ((self.direction == ChooseViewSlideDirectionOrigin || self.direction == ChooseViewSlideDirectionRight) && xOffset < 0) {
         [self changeToDirection:ChooseViewSlideDirectionLeft];
     }
+    if ([self.delegate respondsToSelector:@selector(chooseView:didSlideWithOffset:)]) {
+        [self.delegate chooseView:self didSlideWithOffset:xOffset];
+    }
     [self updateCurrentViewWithOffset:xOffset];
 }
 
