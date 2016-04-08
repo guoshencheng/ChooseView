@@ -336,7 +336,7 @@
         return YES;
     }
     BOOL shouldIgnoreGesture = ABS(velocity.y * TRIGGER_SENSITIVITY) > ABS(velocity.x);
-    if (shouldIgnoreGesture) {
+    if (shouldIgnoreGesture && self.isFlyout) {
         return YES;
     } else {
         if ([self.delegate respondsToSelector:@selector(chooseView:shouldIgnoreGesture:)]) {
