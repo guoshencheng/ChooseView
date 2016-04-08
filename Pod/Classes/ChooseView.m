@@ -191,6 +191,7 @@
     [self removeCell:self.nextView];
     self.currentView = nil;
     self.nextView = nil;
+    self.isFlyout = NO;
 }
 
 - (void)updateCellNumber {
