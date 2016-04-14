@@ -202,6 +202,7 @@
 
 - (void)handlePushToRight {
     self.isFlyout = YES;
+    self.currentIndex ++;
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.25 animations:^{
         [self updateCurrentViewWithOffset:weakSelf.frame.size.width * 2];
@@ -217,6 +218,7 @@
 
 - (void)handlePushToLeft {
     self.isFlyout = YES;
+    self.currentIndex ++;
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.25 animations:^{
         [weakSelf updateCurrentViewWithOffset:-weakSelf.frame.size.width * 2];
@@ -237,7 +239,6 @@
 - (void)pushNextView {
     [self removeCell:self.currentView];
     self.currentView = self.nextView;
-    self.currentIndex ++;
     self.nextView = !!self.prepareView ? self.prepareView : [self.datasource viewInChooseView:self atIndex:self.currentIndex + 1];
     self.prepareView = nil;
     if (self.nextView) {
