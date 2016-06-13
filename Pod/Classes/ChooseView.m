@@ -15,6 +15,7 @@
 @property (strong, nonatomic) NSMutableDictionary *reusabelCellIdDictionary;
 @property (strong, nonatomic) UIView *prepareView;
 @property (assign, nonatomic) NSInteger cellNumber;
+@property (strong, nonatomic) UIView *maskView;
 @property (assign, nonatomic) CGPoint panGestureStartLocation;
 @property (assign, nonatomic) CGPoint swipeGestureStartLocation;
 @property (assign, nonatomic) ChooseViewSlideDirection direction;
@@ -37,6 +38,7 @@
         [self addPanGesture];
         [self addSwipeGesture];
         [self initProperties];
+        [self initMaskView];
     }
     return self;
 }
@@ -134,6 +136,16 @@
     if ([self.delegate respondsToSelector:@selector(chooseViewWillSlide:)]) {
         [self.delegate chooseViewWillSlide:self];
     }
+    if (self.currentView) {
+        if (self.maskView.superview) [self.maskView removeFromSuperview];
+        [self insertSubview:self.maskView belowSubview:self.currentView];
+        [self.maskView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(@(0));
+            make.right.equalTo(@(0));
+            make.top.equalTo(@(0));
+            make.bottom.equalTo(@(0));
+        }];
+    }
 }
 
 - (void)panGestureDidMove:(UIPanGestureRecognizer *)gesture {
@@ -143,6 +155,7 @@
     } else if ((self.direction == ChooseViewSlideDirectionOrigin || self.direction == ChooseViewSlideDirectionRight) && xOffset < 0) {
         [self changeToDirection:ChooseViewSlideDirectionLeft];
     }
+    self.maskView.alpha = (1 - fabs(xOffset) / (2 * self.frame.size.width)) * 0.5;
     if ([self.delegate respondsToSelector:@selector(chooseView:didSlideWithOffset:)]) {
         [self.delegate chooseView:self didSlideWithOffset:xOffset];
     }
@@ -205,8 +218,10 @@
     self.currentIndex ++;
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.25 animations:^{
+        self.maskView.alpha = 0;
         [self updateCurrentViewWithOffset:weakSelf.frame.size.width * 2];
     } completion:^(BOOL finished) {
+        [self.maskView removeFromSuperview];
         if (finished) {
             [self pushNextView];
             if ([self.delegate respondsToSelector:@selector(chooseView:slideDirection:atIndex:)]) {
@@ -221,8 +236,10 @@
     self.currentIndex ++;
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.25 animations:^{
+        self.maskView.alpha = 0;
         [weakSelf updateCurrentViewWithOffset:-weakSelf.frame.size.width * 2];
     } completion:^(BOOL finished) {
+        [self.maskView removeFromSuperview];
         if (finished) {
             [self pushNextView];
             if ([self.delegate respondsToSelector:@selector(chooseView:slideDirection:atIndex:)]) {
@@ -252,8 +269,10 @@
     self.isFlyout = NO;
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.15 animations:^{
+        self.maskView.alpha = 0.0;
         [weakSelf updateCurrentViewWithOffset:0];
     } completion:^(BOOL finished) {
+        [self.maskView removeFromSuperview];
         if ([self.delegate respondsToSelector:@selector(chooseViewDidRecover:)]) {
             [self.delegate chooseViewDidRecover:self];
         }
@@ -301,6 +320,11 @@
     self.currentIndex = 0;
     self.direction = 0;
     self.isFlyout = NO;
+}
+
+- (void)initMaskView {
+    self.maskView = [[UIView alloc] init];
+    self.maskView.backgroundColor = [UIColor blackColor];
 }
 
 - (void)changeToDirection:(ChooseViewSlideDirection)direction {
