@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "ChooseView"
-  s.version          = "1.3.5"
+  s.version          = "1.3.6"
   s.summary          = "a container view for chooseing"
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?

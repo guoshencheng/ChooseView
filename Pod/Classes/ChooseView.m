@@ -131,10 +131,12 @@
 
 - (void)panGestureDidBegin:(UIPanGestureRecognizer *)gesture {
     self.panGestureStartLocation = [gesture locationInView:self];
+    CGPoint velocity = [gesture velocityInView:self];
+    //TODO ADD DIRECTION
     self.direction = ChooseViewSlideDirectionOrigin;
     [self generatePrepareView];
-    if ([self.delegate respondsToSelector:@selector(chooseViewWillSlide:)]) {
-        [self.delegate chooseViewWillSlide:self];
+    if ([self.delegate respondsToSelector:@selector(chooseViewWillSlide:direction:)]) {
+        [self.delegate chooseViewWillSlide:self direction:velocity.x > 0 ? ChooseViewSlideDirectionRight : ChooseViewSlideDirectionLeft];
     }
     if (self.currentView) {
         if (self.maskView.superview) [self.maskView removeFromSuperview];
