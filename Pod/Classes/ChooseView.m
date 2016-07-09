@@ -282,9 +282,12 @@
 }
 
 - (void)updateCurrentViewWithOffset:(CGFloat)offset {
-    __weak typeof(self) weakSelf = self;
+    CGFloat offsetY = fabs(offset) / self.frame.size.width * 20;
     [self.currentView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(weakSelf).centerOffset(CGPointMake(offset, fabs(offset) / self.frame.size.width * 20));
+        make.left.equalTo(@(offset));
+        make.right.equalTo(@(offset));
+        make.top.equalTo(@(offsetY));
+        make.bottom.equalTo(@(offsetY));
     }];
     self.currentView.transform = CGAffineTransformMakeRotation(M_PI_4 / 2 * offset / self.frame.size.width);
     [self layoutIfNeeded];
@@ -292,11 +295,11 @@
 
 - (void)addConstraintToCell:(UIView *)cell {
     [self insertSubview:cell atIndex:0];
-    __weak typeof(self) weakSelf = self;
     [cell mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(weakSelf).centerOffset(CGPointMake(0, 0));
-        make.width.equalTo(@(weakSelf.frame.size.width));
-        make.height.equalTo(@(weakSelf.frame.size.height));
+        make.left.equalTo(@0);
+        make.right.equalTo(@0);
+        make.top.equalTo(@0);
+        make.bottom.equalTo(@0);
     }];
     [self layoutIfNeeded];
 }
