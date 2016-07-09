@@ -283,14 +283,7 @@
 
 - (void)updateCurrentViewWithOffset:(CGFloat)offset {
     CGFloat offsetY = fabs(offset) / self.frame.size.width * 20;
-    [self.currentView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(@(offset));
-        make.right.equalTo(@(offset));
-        make.top.equalTo(@(offsetY));
-        make.bottom.equalTo(@(offsetY));
-    }];
-    self.currentView.transform = CGAffineTransformMakeRotation(M_PI_4 / 2 * offset / self.frame.size.width);
-    [self layoutIfNeeded];
+    self.currentView.transform = CGAffineTransformRotate(CGAffineTransformTranslate(CGAffineTransformIdentity, offset, offsetY), M_PI_4 / 2 * offset / self.frame.size.width);
 }
 
 - (void)addConstraintToCell:(UIView *)cell {
