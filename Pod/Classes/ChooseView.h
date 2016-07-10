@@ -25,6 +25,7 @@ typedef enum : NSUInteger {
 @property (weak, nonatomic) id<ChooseViewDatasource> datasource;
 @property (weak, nonatomic) id<ChooseViewDelegate> delegate;
 @property (assign, nonatomic) NSInteger currentIndex;
+@property (assign, nonatomic) CGSize cellSize;
 
 + (instancetype)create;
 - (void)setUpCurrentIndex:(NSInteger)index;

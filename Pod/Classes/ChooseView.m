@@ -39,6 +39,7 @@
         [self addSwipeGesture];
         [self initProperties];
         [self initMaskView];
+        self.cellSize = [UIScreen mainScreen].bounds.size;
     }
     return self;
 }
@@ -122,7 +123,7 @@
         case UIGestureRecognizerStateCancelled:
         case UIGestureRecognizerStateFailed:
         case UIGestureRecognizerStatePossible:
-//            [self panGestureDidEnd:gesture];
+            //            [self panGestureDidEnd:gesture];
             break;
         default:
             break;
@@ -283,16 +284,21 @@
 
 - (void)updateCurrentViewWithOffset:(CGFloat)offset {
     CGFloat offsetY = fabs(offset) / self.frame.size.width * 20;
-    self.currentView.transform = CGAffineTransformRotate(CGAffineTransformTranslate(CGAffineTransformIdentity, offset, offsetY), M_PI_4 / 2 * offset / self.frame.size.width);
+    __weak typeof(self) weakSelf = self;
+    [self.currentView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(weakSelf).centerOffset(CGPointMake(offset, offsetY));
+    }];
+    self.currentView.transform = CGAffineTransformMakeRotation(M_PI_4 / 2 * offset / self.frame.size.width);
+    [self layoutIfNeeded];
 }
 
 - (void)addConstraintToCell:(UIView *)cell {
+    __weak typeof(self) weakSelf = self;
     [self insertSubview:cell atIndex:0];
     [cell mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(@0);
-        make.right.equalTo(@0);
-        make.top.equalTo(@0);
-        make.bottom.equalTo(@0);
+        make.center.equalTo(weakSelf).centerOffset(CGPointMake(0, 0));
+        make.width.equalTo(@(weakSelf.cellSize.width));
+        make.height.equalTo(@(weakSelf.cellSize.height));
     }];
     [self layoutIfNeeded];
 }
@@ -309,7 +315,7 @@
 
 - (void)generatePrepareView {
     if (![self isCellOver] && ![self loadToEnd]) {
-         self.prepareView = [self.datasource viewInChooseView:self atIndex:self.currentIndex + 2];
+        self.prepareView = [self.datasource viewInChooseView:self atIndex:self.currentIndex + 2];
     }
 }
 
